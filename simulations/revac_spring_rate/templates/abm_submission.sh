@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --time=03:00:00
 #SBATCH --nodes=1
-#SBATCH --mem=2GB 
+#SBATCH --mem=4GB 
 
 module load matlab/2020b 
 

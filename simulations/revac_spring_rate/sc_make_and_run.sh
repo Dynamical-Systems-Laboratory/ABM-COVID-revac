@@ -39,7 +39,7 @@ do
 	mv input_data/infection_parameters.txt input_data/temp.txt
     python3 sub_rate.py input_data/temp.txt input_data/infection_parameters.txt "exposed fraction to get tested" ${Erates[$i]}
 
-	subprocess.call(['sbatch abm_submission.sh'], shell=True)
+	sbatch abm_submission.sh
 	
   	cd ..
 done

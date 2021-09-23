@@ -42,8 +42,8 @@ do
 		mv input_data/infection_parameters.txt input_data/temp.txt
 	    python3.6 sub_rate.py input_data/temp.txt input_data/infection_parameters.txt "fraction to get tested" ${Syrates[$i]}
 		mv input_data/infection_parameters.txt input_data/temp.txt
-	    python3.6 sub_rate.py input_data/temp.txt input_data/infection_parameters.txt "average fraction to get tested" ${Syrates[$i]}
-	    mv input_data/infection_parameters.txt input_data/temp.txt
+	    	python3.6 sub_rate.py input_data/temp.txt input_data/infection_parameters.txt "average fraction to get tested" ${Syrates[$i]}
+	    	mv input_data/infection_parameters.txt input_data/temp.txt
 		python3.6 sub_rate.py input_data/temp.txt input_data/infection_parameters.txt "exposed fraction to get tested" ${Erates[$i]}
 		mv input_data/infection_parameters.txt input_data/temp.txt
 		python3.6 sub_rate.py input_data/temp.txt input_data/infection_parameters.txt "vaccination rate" $j
