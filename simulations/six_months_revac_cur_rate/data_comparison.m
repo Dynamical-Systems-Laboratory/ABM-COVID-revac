@@ -61,7 +61,6 @@ function plot_all_and_mean(time, y, i, clrm, clrf, plot_title, ylab, noMarkers)
     % Ticks
     xticks([0 60 120 180])
     xticklabels({'Sept 7','Nov 6','Jan 5','Mar 6'})
-
     %xtickangle(45)
 
     % Uncomment the following line to preserve the Y-limits of the axes

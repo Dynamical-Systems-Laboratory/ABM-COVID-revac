@@ -76,7 +76,6 @@ cb_ticks = [0, 10e3, 20e3, 30e3, 40e3, 50e3, 60e3];
 %cb_tick_labels = {'0', '10e3', '20e3', '30e3', '40e3', '50e3', '60e3', '70e3'};
 % x10^4
 cb_tick_labels = {'0', '1', '2', '3', '4', '5', '6'};
-
 plot_heatmap(testing_Sy, vac_rates, total_cases, 2, plot_title, max_clr, clr_points, ylimits(2), 1, n_pop, cb_ticks, cb_tick_labels, clevels)
 
 function plot_heatmap(x, y, values, i, ylab, max_clr, clr_points, clim, use_percent, n_pop, cb_ticks, cb_tick_labels, clevels)

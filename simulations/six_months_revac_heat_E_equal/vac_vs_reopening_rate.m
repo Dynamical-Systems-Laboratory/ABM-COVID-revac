@@ -74,7 +74,6 @@ ylimits = [0,1.5e5];
 clevels = [700, 1e3, 2e3, 3.5e3, 7e3, 2.5e4, 6e4];
 cb_ticks = [0, 0.25e5, 0.5e5, 0.75e5, 1e5, 1.25e5, 1.5e5];
 cb_tick_labels = {'0', '0.25', '0.5', '0.75', '1', '1.25', '1.5'};
-
 plot_heatmap(testing_Sy, vac_rates, total_cases, 2, plot_title, max_clr, clr_points, ylimits(2), 1, n_pop, cb_ticks, cb_tick_labels, clevels)
 
 function plot_heatmap(x, y, values, i, ylab, max_clr, clr_points, clim, use_percent, n_pop, cb_ticks, cb_tick_labels, clevels)
