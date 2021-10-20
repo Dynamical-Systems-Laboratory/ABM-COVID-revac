@@ -16,7 +16,7 @@ load(mfile)
 cst = 1;
 
 % Active
-ylab = 'Prevalence';
+ylab = 'Number of active cases';
 plot_title = '$\mathrm{E+S_y}$';
 temp = cur_infected(:,cst:end);
 plot_all_and_mean(time, temp, 1, clrm, clrf, plot_title, ylab, false)
@@ -73,8 +73,14 @@ function plot_all_and_mean(time, y, i, clrm, clrf, plot_title, ylab, noMarkers)
         'on'); 
     xlim([0,180])
     
+
     % Size
     set(gcf,'Position',[200 500 950 750])
+    
+    % Add a vertical line signifying end of vaccination campaign
+    % (hardcoded to this vaccination rate)
+    ymm = ylim;
+    plot([28.5, 28.5], [0, ymm(2)], 'k', 'LineWidth', 1.52)
 end
 
 function plot_one(time, y, i, clrm, clrf, plot_title, ylab, noMarkers)

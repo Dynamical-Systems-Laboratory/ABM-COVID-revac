@@ -47,7 +47,7 @@ public:
 	//
 		
 	/// Add guest household ID to agent aID
-	void add_household(const int aID, const int hID);
+	void add_household(const int aID, const int hID, const int);
 
 	/// Return true if a household is fully quarantined
 	bool house_is_isolated(const int hID) const { return is_isolated.at(hID-1); }
@@ -61,7 +61,8 @@ public:
 	/// Apply selective isolation to all guest household of a quarantined agent
 	std::vector<int> isolate_visited_households(const int aID, 
 										const std::vector<Household>& households, 
-										const double compliance, Infection& infection);
+										const double compliance, Infection& infection,
+										const int, const double);
 
 	/// Apply isolation to random num_contacts at a general workplace of agent aID
 	std::vector<int> isolate_workplace(const int aID, const std::vector<Agent>& agents, 
@@ -88,7 +89,7 @@ public:
 	//
 
 	// Records of visited households
-	std::vector<std::deque<int>> get_private_leisure() const { return private_leisure; }
+	std::vector<std::deque<std::vector<int>>> get_private_leisure() const { return private_leisure; }
 
 private:
 	// Number of agents
@@ -98,8 +99,10 @@ private:
 	// Max number of private contacts to store
 	int max_num_hID = 0;
 
-	// Current house IDs from private visits of each agent
-	std::vector<std::deque<int>> private_leisure;
+	// Deque of vectors with the following elements:
+	// 0) House IDs from private visits of each agent
+	// 1) Times of visit floored to an integer day
+	std::vector<std::deque<std::vector<int>>> private_leisure;
 	// Households isolation flags
 	std::vector<bool> is_isolated;
 };

@@ -13,14 +13,14 @@
 // - Setting properties and removal of isolated agents is done through ABM
 
 // Add guest household ID to agent aID
-void Contact_tracing::add_household(const int aID, const int hID)
+void Contact_tracing::add_household(const int aID, const int hID, const int time)
 {
-	std::deque<int>& visits = private_leisure.at(aID-1);
+	std::deque<std::vector<int>>& visits = private_leisure.at(aID-1);
 	if (visits.size() < max_num_hID) {
-		visits.push_back(hID);
+		visits.push_back(std::vector<int>{hID, time});
 	} else {
 		visits.pop_front();
-		visits.push_back(hID);
+		visits.push_back(std::vector<int>{hID, time});
 	}
 	assert(visits.size() <= max_num_hID); 
 }
@@ -41,13 +41,23 @@ std::vector<int> Contact_tracing::isolate_household(const int aID, const Househo
 // Apply selective isolation to all guest households of a quarantined agent
 std::vector<int> Contact_tracing::isolate_visited_households(const int aID,
 									const std::vector<Household>& households, 
-									const double compliance, Infection& infection)
+									const double compliance, Infection& infection,
+									const int time, const double dt)
 {
 	std::vector<int> traced;
-	std::deque<int>& visits = private_leisure.at(aID-1);
+	std::deque<std::vector<int>>& visits = private_leisure.at(aID-1);
 	while (!visits.empty()) {
-		int hsID = visits.front();
-		// Check if guest household will isolate (if not already isolated)
+		std::vector<int> hdata = visits.front();
+		int hsID = hdata.at(0);
+		int tvis = hdata.at(1);
+		int del_tvis = time - tvis;
+		// This is kind of hideous but will do for now
+		// Will apply CT only to households visited within an input #days		
+		if (del_tvis > static_cast<int>(max_num_hID*dt)) {
+			visits.pop_front();
+			continue;
+		}
+ 		// Check if guest household will isolate (if not already isolated)
 		if (!is_isolated.at(hsID-1) && infection.get_uniform() <= compliance) {
 			for (const auto& ag : households.at(hsID-1).get_agent_IDs()) {
 				if (ag != aID) {

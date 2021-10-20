@@ -1171,7 +1171,7 @@ void ABM::check_select_and_register_leisure_location(const std::vector<int>& age
 			agents.at(aID-1).set_leisure_type("household");
 			agents.at(aID-1).set_leisure_ID(loc_ID);
 			// Record this visit
-			contact_tracing.add_household(aID, loc_ID);
+			contact_tracing.add_household(aID, loc_ID, static_cast<int>(time));
 		} else if (is_public) {
 			// Only add if leisure location is within town
 			if(!leisure_locations.at(loc_ID-1).outside_town()){
@@ -1611,7 +1611,8 @@ void ABM::contact_trace_agent(Agent& agent)
 	} else {
 		// Private visits
 		traced = contact_tracing.isolate_visited_households(aID, households,
-					infection_parameters.at("contact tracing compliance"), infection);
+					infection_parameters.at("contact tracing compliance"), infection,
+					static_cast<int>(time), dt);
 		all_traced.insert(traced.begin(), traced.end());
 		// Agent's household
 		traced = contact_tracing.isolate_household(aID, 

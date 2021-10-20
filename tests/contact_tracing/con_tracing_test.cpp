@@ -32,18 +32,18 @@ int main()
 
 bool tracking_visits_tests()
 {
-	int n_agents = 100, n_houses = 1000, max_visits = 3;
+	int n_agents = 100, n_houses = 1000, max_visits = 3, dt = 1;
 	Contact_tracing contact_tracing(n_agents, n_houses, max_visits);
 
-	// Add some house IDs
-	contact_tracing.add_household(1, 1);	
-	contact_tracing.add_household(1, 45);
-	contact_tracing.add_household(45, 41);
-	contact_tracing.add_household(4, 789);
-	contact_tracing.add_household(4, 73);
-	contact_tracing.add_household(4, 999);
+	// Add some house IDs (third argument is time of visit)
+	contact_tracing.add_household(1, 1, 10);	
+	contact_tracing.add_household(1, 45, 2);
+	contact_tracing.add_household(45, 41, 11);
+	contact_tracing.add_household(4, 789, 30);
+	contact_tracing.add_household(4, 73, 500);
+	contact_tracing.add_household(4, 999, 1);
 
-	std::vector<std::deque<int>> locations = contact_tracing.get_private_leisure();
+	std::vector<std::deque<std::vector<int>>> locations = contact_tracing.get_private_leisure();
 
 	int aID = 1;
 	for (auto& loc : locations) {
@@ -54,7 +54,7 @@ bool tracking_visits_tests()
 			}
 		}
 		if (aID == 1) {
-			if (loc.size() != 2 || loc.front() != 1 || loc.back() != 45) {
+			if (loc.size() != 2 || loc.front().at(0) != 1 || loc.back().at(0) != 45) {
 				std::cerr << "Wrong number of households or household ID for aID = 1" << std::endl;
 				return false;
 			}
@@ -64,23 +64,23 @@ bool tracking_visits_tests()
 				std::cerr << "Wrong number of households for aID = 4" << std::endl;
 				return false;
 			}
-			if (loc.front() != 789) {
+			if (loc.front().at(0) != 789) {
 				std::cerr << "Wrong first member for aID = 4" << std::endl;
 				return false;
 			}
 			loc.pop_front();
-			if (loc.front() != 73) {
+			if (loc.front().at(0) != 73) {
 				std::cerr << "Wrong second member for aID = 4" << std::endl;
 				return false;
 			}
 			loc.pop_front();
-			if (loc.front() != 999) {
+			if (loc.front().at(0) != 999) {
 				std::cerr << "Wrong third member for aID = 4" << std::endl;
 				return false;
 			}	
 		}
 		if (aID == 45) {
-			if (loc.size() !=1 || loc.front() != 41) {
+			if (loc.size() !=1 || loc.front().at(0) != 41) {
 				std::cerr << "Wrong member for aID = 44" << std::endl;
 				return false;
 			}
@@ -89,24 +89,24 @@ bool tracking_visits_tests()
 	}
  
 	// Test adding past the limit
-	contact_tracing.add_household(4, 879);
+	contact_tracing.add_household(4, 879, 4);
 	locations = contact_tracing.get_private_leisure();
-	std::deque<int> loc = locations.at(3);
+	std::deque<std::vector<int>> loc = locations.at(3);
 	if (loc.size() != 3) {
 		std::cerr << "Wrong number of households for aID = 4 after adding new" << std::endl;
 		return false;
 	}
-	if (loc.front() != 73) {
+	if (loc.front().at(0) != 73) {
 		std::cerr << "Wrong first member for aID = 4 after adding new" << std::endl;
 		return false;
 	}
 	loc.pop_front();
-	if (loc.front() != 999) {
+	if (loc.front().at(0) != 999) {
 		std::cerr << "Wrong second member for aID = 4 after adding new" << std::endl;
 		return false;
 	}
 	loc.pop_front();
-	if (loc.front() != 879) {
+	if (loc.front().at(0) != 879) {
 		std::cerr << "Wrong third member for aID = 4 after adding new" << std::endl;
 		return false;
 	}
@@ -172,13 +172,17 @@ bool quarantining_household_test()
 bool quarantining_visits_test()
 {
 	// Model parameters and output
-	double dt = 2.0;
+	double dt = 0.5;
 	std::string fin("test_data/input_files_all_vac_reopen.txt");
 	int N_active = 30000, N_vac = 10000;
 	bool vaccinate = true;
 	int n_agents = 80000, n_houses = 29645, max_visits = 10;
 	double compliance = 0.8;
 	int iso_count = 0;
+	std::vector<std::deque<std::vector<int>>> locations;
+	std::deque<std::vector<int>> cur_agent;
+	// 10 max_visits and dt = 0.5 means tracking 5 days back
+	int days_to_track = static_cast<int>(max_visits*dt);
 	Contact_tracing contact_tracing(n_agents, n_houses, max_visits);
 
 	ABM abm(dt);
@@ -194,7 +198,7 @@ bool quarantining_visits_test()
 	std::vector<int> traced;
 
 	// Run the simulation to make sure households are visited
-	for (int ti=0; ti<2*max_visits; ++ti) {		
+	for (int ti=0; ti<3*max_visits; ++ti) {		
 		abm.transmit_ideal_testing_vac_reopening();
 		// Add guest visits
 		const std::vector<Agent>& agents = abm.get_vector_of_agents();
@@ -208,14 +212,31 @@ bool quarantining_visits_test()
 						hID += 1;
 					}
 				}
-				contact_tracing.add_household(agent.get_ID(), hID);
+				contact_tracing.add_household(agent.get_ID(), hID, static_cast<int>(abm.get_time()));
 			}
 			// Isolate
 			if (ti > max_visits) {
 				if (infection.get_uniform() < 0.47) {
 					traced = contact_tracing.isolate_visited_households(agent.get_ID(), houses, 
-						compliance, infection);
-					// Check
+						compliance, infection, static_cast<int>(abm.get_time()), dt);
+					// Check if all have correct time
+					locations = contact_tracing.get_private_leisure();
+					cur_agent = locations.at(agent.get_ID()-1);
+					for (const auto a_house : cur_agent) {
+						int dvis = static_cast<int>(abm.get_time())-a_house.at(1);
+						if (dvis > days_to_track) {
+							// None of the agents in this should be included in tracing output
+							std::vector<int> all_hosts = houses.at(a_house.at(0)-1).get_agent_IDs();
+							for (const auto host : all_hosts) {
+								if (std::find(traced.begin(), traced.end(), host) != traced.end()) {
+									std::cerr << "The agent should not be present in the output "
+										  << "since the household was not visited recently " << std::endl;
+									return false;
+								}							
+							}
+						}	
+					} 	
+					// Check if agent is there
 					if (std::find(traced.begin(), traced.end(), agent.get_ID()) != traced.end()) {
 						std::cerr << "Contact traced agent should not be present "
 								  << "in the return vector" << std::endl;
