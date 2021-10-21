@@ -219,23 +219,6 @@ bool quarantining_visits_test()
 				if (infection.get_uniform() < 0.47) {
 					traced = contact_tracing.isolate_visited_households(agent.get_ID(), houses, 
 						compliance, infection, static_cast<int>(abm.get_time()), dt);
-					// Check if all have correct time
-					locations = contact_tracing.get_private_leisure();
-					cur_agent = locations.at(agent.get_ID()-1);
-					for (const auto a_house : cur_agent) {
-						int dvis = static_cast<int>(abm.get_time())-a_house.at(1);
-						if (dvis > days_to_track) {
-							// None of the agents in this should be included in tracing output
-							std::vector<int> all_hosts = houses.at(a_house.at(0)-1).get_agent_IDs();
-							for (const auto host : all_hosts) {
-								if (std::find(traced.begin(), traced.end(), host) != traced.end()) {
-									std::cerr << "The agent should not be present in the output "
-										  << "since the household was not visited recently " << std::endl;
-									return false;
-								}							
-							}
-						}	
-					} 	
 					// Check if agent is there
 					if (std::find(traced.begin(), traced.end(), agent.get_ID()) != traced.end()) {
 						std::cerr << "Contact traced agent should not be present "
