@@ -63,10 +63,10 @@ max_clr = [12, 5, 125]/255;
 clr_points = 20;
 
 plot_title = 'Total deaths';
-ylimits = [0,1250];
-clevels = [10, 20, 50, 150, 300, 600];
-cb_ticks = [0, 250, 500, 750, 1000, 1250];
-cb_tick_labels = {'0', '250', '500', '750', '1000', '1250'};
+ylimits = [0,1500];
+clevels = [10, 20, 50, 150, 300, 600, 1000];
+cb_ticks = [0, 250, 500, 750, 1000, 1250, 1500];
+cb_tick_labels = {'0', '250', '500', '750', '1000', '1250', '1500'};
 plot_heatmap(testing_Sy, vac_rates, total_deaths, 1, plot_title, max_clr, clr_points, ylimits(2), 1, n_pop, cb_ticks, cb_tick_labels, clevels)
 
 plot_title = 'Total infected';

@@ -63,19 +63,19 @@ max_clr = [7, 125, 5]/255;
 clr_points = 21;
 
 plot_title = 'Total deaths';
-ylimits = [0,250];
-clevels = [5, 10, 25, 50, 100, 150];
-cb_ticks = [0, 50, 100, 150, 200, 250];
-cb_tick_labels = {'0', '50', '100', '150', '200', '250'};
+ylimits = [0,350];
+clevels = [5, 10, 25, 50, 100, 200];
+cb_ticks = [0, 50, 100, 150, 200, 250, 300, 350];
+cb_tick_labels = {'0', '50', '100', '150', '200', '250', '300', '350'};
 plot_heatmap(testing_Sy, vac_rates, total_deaths, 1, plot_title, max_clr, clr_points, ylimits(2), 1, n_pop, cb_ticks, cb_tick_labels, clevels)
 
 plot_title = 'Total infected';
-ylimits = [0,70e3];
+ylimits = [0,90e3];
 clevels = [700, 1e3, 2e3, 3.5e3, 7e3, 2.5e4];
-cb_ticks = [0, 10e3, 20e3, 30e3, 40e3, 50e3, 60e3, 70e3];
+cb_ticks = [0, 10e3, 20e3, 30e3, 40e3, 50e3, 60e3, 70e3, 80e3, 90e3];
 %cb_tick_labels = {'0', '10e3', '20e3', '30e3', '40e3', '50e3', '60e3', '70e3'};
 % x10^4
-cb_tick_labels = {'0', '1', '2', '3', '4', '5', '6', '7'};
+cb_tick_labels = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 plot_heatmap(testing_Sy, vac_rates, total_cases, 2, plot_title, max_clr, clr_points, ylimits(2), 1, n_pop, cb_ticks, cb_tick_labels, clevels)
 

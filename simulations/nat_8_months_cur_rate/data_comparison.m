@@ -78,6 +78,7 @@ function plot_all_and_mean(time, y, i, clrm, clrf, plot_title, ylab, noMarkers)
     
     % Add a vertical line signifying end of vaccination campaign
     % (hardcoded to this vaccination rate)
+%     ylim([0,1600])
     ymm = ylim;
     plot([148, 148], [0, ymm(2)], 'k', 'LineWidth', 1.52)
 end

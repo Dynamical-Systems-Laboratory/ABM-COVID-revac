@@ -16,7 +16,7 @@ load(mfile)
 cst = 1;
 
 % Active
-ylab = 'Prevalence';
+ylab = 'Number of active cases';
 plot_title = '$\mathrm{E+S_y}$';
 temp = cur_infected(:,cst:end);
 plot_all_and_mean(time, temp, 1, clrm, clrf, plot_title, ylab, false)
