@@ -75,7 +75,8 @@ clevels = [2e3, 5e3, 1e4, 2e4, 5e4];
 cb_ticks = [0, 0.25e5, 0.5e5, 0.75e5, 1e5, 1.25e5, 1.5e5];
 % cb_tick_labels = {'0', '5,000', '10,000', '15,000', '20,000', '25,000', '30,000', '35,000'};
 % cb_tick_labels = {'0', '0.25e5', '0.5e5', '0.75e5', '1e5', '1.25e5'};
-cb_tick_labels = {'0', '0.25', '0.5', '0.75', '1', '1.25', '1.5'};
+% x10^3
+cb_tick_labels = {'0', '25', '50', '75', '100', '125', '150'};
 
 plot_heatmap(testing_Sy, vac_rates, total_cases, 2, plot_title, max_clr, clr_points, ylimits(2), 1, n_pop, cb_ticks, cb_tick_labels, clevels)
 
