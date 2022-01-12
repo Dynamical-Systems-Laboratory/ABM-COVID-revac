@@ -164,7 +164,7 @@ void ABM::load_vaccinations(const std::string& fname, const std::string& data_pa
 								const bool use_custom, const std::string& offset_file ) 
 {
 	if (use_custom) {
-		vaccinations = Vaccinations(fname, data_path, offset_file);
+		vaccinations = Vaccinations(fname, data_path, offset_file, infection);
 	} else {
 		vaccinations = Vaccinations(fname, data_path);
 	}

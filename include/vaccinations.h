@@ -40,9 +40,11 @@ public:
 	 * @param infile - name of the file with the input parameters
 	 * @param data_dir - directory with tabulated vaccine properties (accessible path with / at the end)
 	 * @param offset_file - file with time offsets
+	 * @param infection - object governing all random ops
 	 */
-	Vaccinations(const std::string& infile, const std::string& data_dir, const std::string& offset_file) : input_file(infile) 
-		{ load_vaccination_parameters(input_file, data_dir); load_and_shuffle_offsets(offset_file); use_offsets_from_file = true; }
+	Vaccinations(const std::string& infile, const std::string& data_dir, const std::string& offset_file, Infection& infection) : input_file(infile) 
+		{ load_vaccination_parameters(input_file, data_dir); 
+		  load_and_shuffle_time_offsets(offset_file, infection); use_offsets_from_file = true; }
 
 	/**
 	 * \brief Randomly vaccinates requested number of agents
@@ -137,13 +139,13 @@ private:
 	// Vector with time offsets
 	std::vector<double> time_offsets;
 	// Flag to use those and not uniform
-	use_offsets_from_file = false;
+	bool use_offsets_from_file = false;
 
 	/// Load parameters related to vaccinations store in a map
 	void load_vaccination_parameters(const std::string&, const std::string&);
 
 	/// Load and shuffle time custom offsets 
-	void load_and_shuffle_time_offsets(const std::string&);
+	void load_and_shuffle_time_offsets(const std::string&, Infection&);
 
 	/// Copy parameters in lst into nested vec 
 	void copy_vaccination_dependencies(std::forward_list<double>&& lst,

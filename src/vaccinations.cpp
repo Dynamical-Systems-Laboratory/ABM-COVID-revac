@@ -27,7 +27,7 @@ void Vaccinations::load_vaccination_parameters(const std::string& infile, const 
 }
 
 /// Load and shuffle time custom offsets 
-void Vaccinations::load_and_shuffle_time_offsets(const std::string& offset_file)
+void Vaccinations::load_and_shuffle_time_offsets(const std::string& offset_file, Infection& infection)
 {
 	// Unused options of the AbmIO object
 	std::string delim(" ");
