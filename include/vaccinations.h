@@ -32,7 +32,17 @@ public:
 	 * @param data_dir - directory with tabulated vaccine properties (accessible path with / at the end)
 	 */
 	Vaccinations(const std::string& infile, const std::string& data_dir) : input_file(infile) 
-		{ load_vaccination_parameters(input_file, data_dir); } 
+		{ load_vaccination_parameters(input_file, data_dir); use_offsets_from_file = false; } 
+
+	/**
+	 * \brief Creates a Vaccinations object with custom attributes and custom time offsets for initialization
+	 *
+	 * @param infile - name of the file with the input parameters
+	 * @param data_dir - directory with tabulated vaccine properties (accessible path with / at the end)
+	 * @param offset_file - file with time offsets
+	 */
+	Vaccinations(const std::string& infile, const std::string& data_dir, const std::string& offset_file) : input_file(infile) 
+		{ load_vaccination_parameters(input_file, data_dir); load_and_shuffle_offsets(offset_file); use_offsets_from_file = true; }
 
 	/**
 	 * \brief Randomly vaccinates requested number of agents
@@ -121,12 +131,19 @@ private:
 	// General types are "one dose" and "two doses", and subtypes are the specific
 	// vaccination variants (e.g. two doses type 1 can be Moderna, and type 2 Pheizer) 
 	std::map<std::string, std::vector<double>> vac_types_probs;
-	// Outer maps are vaccination types, ineer are properties altered by
+	// Outer maps are vaccination types, inner are properties altered by
 	// vaccinating in an extent that correspond to each type
 	std::map<std::string, std::map<std::string, std::vector<std::vector<double>>>> vac_types_properties;
+	// Vector with time offsets
+	std::vector<double> time_offsets;
+	// Flag to use those and not uniform
+	use_offsets_from_file = false;
 
 	/// Load parameters related to vaccinations store in a map
 	void load_vaccination_parameters(const std::string&, const std::string&);
+
+	/// Load and shuffle time custom offsets 
+	void load_and_shuffle_time_offsets(const std::string&);
 
 	/// Copy parameters in lst into nested vec 
 	void copy_vaccination_dependencies(std::forward_list<double>&& lst,

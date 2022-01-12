@@ -76,6 +76,13 @@ public:
 		std::shuffle(v.begin(), v.end(), gen);
 	}
 
+	/// Performs in-place random shuffling of a vector
+	// Yes, this should be templated
+	void vector_shuffle(std::vector<double>& v)
+	{ 
+		std::shuffle(v.begin(), v.end(), gen);
+	}
+
 private:
     std::mt19937 gen;
 };

@@ -48,7 +48,7 @@ void ABM::initialize_data_collection()
 }
 
 // Create the town, agents, infection properties, and introduce initially infected 
-void ABM::simulation_setup(const std::string filename, const int inf0)
+void ABM::simulation_setup(const std::string filename, const int inf0, const bool custom_vac_offsets)
 {
 	// Load filenames - key is the tag, value is the actual file name
 	LoadParameters ldparam;
@@ -65,7 +65,15 @@ void ABM::simulation_setup(const std::string filename, const int inf0)
 	load_infection_parameters(setup_files.at("Simulation parameters"));
 	load_age_dependent_distributions(dfiles);
 	load_testing(setup_files.at("Testing manager"));
-	load_vaccinations(setup_files.at("Vaccination parameters"), setup_files.at("Vaccination tables directory"));
+
+	// So not to require extra parameters (and be backwards compatible)
+	if (custom_vac_offsets) {
+		load_vaccinations(setup_files.at("Vaccination parameters"), 
+			setup_files.at("Vaccination tables directory"), custom_vac_offsets, 
+			setup_files.at("File with vaccination offsets"));
+	} else {
+		load_vaccinations(setup_files.at("Vaccination parameters"), setup_files.at("Vaccination tables directory"));
+	}
 	// Setup the town and mobility components
 	create_households(setup_files.at("Household data"));
 	create_schools(setup_files.at("School data"));
@@ -152,9 +160,14 @@ void ABM::load_testing(const std::string fname)
 }
 
 // Initialize Vaccinations class 
-void ABM::load_vaccinations(const std::string fname, const std::string data_path) 
+void ABM::load_vaccinations(const std::string& fname, const std::string& data_path, 
+								const bool use_custom, const std::string& offset_file ) 
 {
-	vaccinations = Vaccinations(fname, data_path);
+	if (use_custom) {
+		vaccinations = Vaccinations(fname, data_path, offset_file);
+	} else {
+		vaccinations = Vaccinations(fname, data_path);
+	}
 }
 
 // Generate and store household objects

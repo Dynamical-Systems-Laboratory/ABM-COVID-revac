@@ -43,6 +43,7 @@ std::ostream& operator<< (std::ostream& os, const TestStruct& test){
 
 // Tests
 bool read_test_suite();
+bool read_rows_test_suite();
 bool custom_test_suite();
 bool default_test_suite();
 bool write_1D_vector_test_suite();
@@ -68,6 +69,7 @@ bool write_object_test_suite();
 int main()
 {
 	test_pass(read_test_suite(), "AbmIO read only");	
+	test_pass(read_rows_test_suite(), "AbmIO read rows from one column file");	
 	test_pass(custom_test_suite(), "AbmIO write and read custom properties");
 	test_pass(default_test_suite(), "AbmIO default properties");
 	test_pass(write_1D_vector_test_suite(), "AbmIO write and read for 1D vectors");
@@ -121,6 +123,38 @@ bool read_test_suite()
 	if (!read_test(dbl_exp, "./test_data/r_double.txt", is_equal_double))
 		return false;
 	
+	// All passed
+	return true;
+}
+
+/**
+ * \brief Series of read tests for reading a single column with doubles
+ */
+bool read_rows_test_suite()
+{
+	// Unused options of the AbmIO object
+	std::string delim(" ");
+	bool one_file = true;
+	std::vector<size_t> dims = {0,0,0};
+
+	// Read new_vec 
+	vec1D<double> new_vec;
+	AbmIO io_int("./test_data/row_vec.txt", delim, one_file, dims);
+	new_vec = io_int.read_rows<double>();
+
+	// Expected
+	vec1D<double> dbl_exp = {0.6477, 0.2963, -1.0e5, 6.868e5, 0.6256};
+
+	// Compare
+	double tol = 1e-5;
+	for (int i = 0; i < dbl_exp.size(); ++i) {
+		if (!float_equality<double>(new_vec.at(i), dbl_exp.at(i), tol)) {
+			std::cout << new_vec.at(i) << " does not match expected " 
+					  << dbl_exp.at(i) << std::endl;
+			return false;
+		}
+	}	
+
 	// All passed
 	return true;
 }

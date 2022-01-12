@@ -109,6 +109,9 @@ public:
 	/// Randomly shuffles a vector of ints
 	void vector_shuffle(std::vector<int>& v) 
 		{ rng.vector_shuffle(v); }
+	/// Randomly shuffles a vector of doubles
+	void vector_shuffle(std::vector<double>& v) 
+		{ rng.vector_shuffle(v); }
 
 	/// Return a random number between 0 and 1 according to uniform distribution
 	double get_uniform() { return rng.get_random(0.0, 1.0); }		

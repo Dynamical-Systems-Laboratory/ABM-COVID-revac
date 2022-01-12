@@ -50,6 +50,14 @@ public:
 	template<typename T>
 	std::vector<std::vector<T>> read_vector() const;
 
+	/**
+	 * \brief Read one column of a file (i.e. all rows - one point per row, separated with newline)
+	 * \details Converts the value to double and then back to T
+	 * @returns std::vector of type T with each element being one row in the column read 
+	 */
+	template<typename T>
+	std::vector<T> read_rows() const;
+
 	//
 	// Writing functionality 
 	//
@@ -112,6 +120,20 @@ std::vector<std::vector<T>> AbmIO::read_vector() const
 			temp.push_back(elem);
 		}
 		output.push_back(temp);
+	}
+	return output;
+}
+
+template<typename T>
+std::vector<T> AbmIO::read_rows() const
+{
+	FileHandler file(fname);
+	std::fstream &in = file.get_stream();
+	std::string elem;
+	std::vector<T> output;
+
+	while (std::getline(in, elem)){
+		output.push_back(std::stod(elem));
 	}
 	return output;
 }

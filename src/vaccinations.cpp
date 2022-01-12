@@ -26,6 +26,19 @@ void Vaccinations::load_vaccination_parameters(const std::string& infile, const 
 	}
 }
 
+/// Load and shuffle time custom offsets 
+void Vaccinations::load_and_shuffle_time_offsets(const std::string& offset_file)
+{
+	// Unused options of the AbmIO object
+	std::string delim(" ");
+	bool one_file = true;
+	std::vector<size_t> dims = {0,0,0};
+
+	AbmIO io(offset_file, delim, one_file, dims);
+	time_offsets =  io.read_rows<double>();
+	infection.vector_shuffle(time_offsets);
+}
+
 // Copy parameters in v1 into v2
 void Vaccinations::copy_vaccination_dependencies(std::forward_list<double>&& lst,
 									std::vector<std::vector<double>>& vec)
@@ -403,7 +416,13 @@ void Vaccinations::vaccinate_and_setup_time_offset(std::vector<Agent>& agents, c
 		agent.set_vaccinated(true);
 		agent.set_needs_next_vaccination(false);
 		// This amount of time will be subtracted from the current time
-		offset = -1.0*infection.get_uniform(t0, tf);
+		if (use_offsets_from_file) {
+			std::cout << "Offsets from a custom distribution" << std::endl;
+			offset = time_offsets.at(infection.get_int(0, time_offsets.size()-1)); 		
+		} else {
+			std::cout << "Offsets from a uniform distribution" << std::endl;
+			offset = -1.0*infection.get_uniform(t0, tf);
+		}
 		agent.set_vac_time_offset(offset);
 		if ( infection.get_uniform() <= vaccination_parameters.at("Fraction taking one dose vaccine")) {
 			agent.set_vaccine_type("one_dose");

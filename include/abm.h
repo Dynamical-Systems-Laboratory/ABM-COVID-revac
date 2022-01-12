@@ -86,9 +86,10 @@ public:
 	 *	
 	 * @param filename - path of the file with input information
 	 * @param ninf0 - number of initially infected - overwriting input file
+	 * @param custom_vac_offsets - read the vac time offsets from file if true
 	 *
 	 */	
-	void simulation_setup(const std::string filename, const int ninf0 = 0);
+	void simulation_setup(const std::string filename, const int ninf0 = 0, const bool custom_vac_offsets = false);
 
 	/**
 	 * \brief Create households based on information in a file
@@ -382,7 +383,9 @@ private:
 	void load_testing(const std::string);
 	
 	/// Initialize Vaccinations class 
-	void load_vaccinations(const std::string, const std::string);
+	void load_vaccinations(const std::string&, const std::string&, 
+							const bool use_custom = false, 
+							const std::string& offset_file = "ne-postoji");
 	
 	/// \brief Set properties of initially infected - exposed
 	void initial_exposed(Agent&);
